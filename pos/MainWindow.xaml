@@ -1,0 +1,78 @@
+<Window
+    x:Class="pos.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:pos"
+    xmlns:models="using:pos.Models"
+    x:Name="RootWindow"
+    Title="Punto de Venta - Taquería">
+
+    <Grid Padding="20" ColumnSpacing="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="Menú de Tacos" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
+            <ListView ItemsSource="{x:Bind ViewModel.Menu}" SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Taco">
+                        <Grid Padding="10" ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Bind Nombre}" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{x:Bind Precio}" FontSize="16" Foreground="Gray" VerticalAlignment="Center"/>
+
+                            <Button Grid.Column="2" Content="Agregar" 
+                                    Command="{Binding ElementName=RootWindow, Path=ViewModel.AgregarAlCarritoCommand}" 
+                                    CommandParameter="{x:Bind}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Width="350" Spacing="15">
+            <TextBlock Text="Ticket de Compra" FontSize="22" FontWeight="Bold"/>
+
+            <ListView ItemsSource="{x:Bind ViewModel.Carrito}" SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Taco">
+                        <Grid Padding="8" ColumnSpacing="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Bind Nombre}" VerticalAlignment="Center"/>
+                            <NumberBox Grid.Column="1" Value="{x:Bind Cantidad, Mode=TwoWay}" 
+                                       Minimum="1" Maximum="50" SpinButtonPlacementMode="Inline" 
+                                       Width="80"/>
+
+                            <Button Grid.Column="2" Content="❌" 
+                                    Command="{Binding ElementName=RootWindow, Path=ViewModel.QuitarDelCarritoCommand}" 
+                                    CommandParameter="{x:Bind}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Border BorderThickness="1" BorderBrush="Gray" Padding="10" CornerRadius="5">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Total:" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{x:Bind ViewModel.Total, Mode=OneWay}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Button Content="Guardar Ticket (JSON)" Click="GuardarTicket_Click" 
+                    HorizontalAlignment="Stretch" Background="Green" Foreground="White" 
+                    FontSize="16" Padding="10"/>
+        </StackPanel>
+    </Grid>
+</Window>
